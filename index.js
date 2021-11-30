@@ -7,6 +7,7 @@ const binance = new Binance().options({
 // binance.futuresLeverageBracket("LINKUSDT").then(resp => {
 //     console.log(resp[0])
 // })
+const PORT = process.env.PORT || 3000;
 const express = require("express");
 const path = require("path");
 const app = express();
@@ -40,7 +41,8 @@ app.get("/", async(req, res) => {
       }); 
   });
   
-  app.listen(80, () => {
+  app.listen(PORT, () => {
+    if(err) throw err;
     console.log("server started on port 80");
   });
  
