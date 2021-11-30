@@ -1,7 +1,7 @@
 const Binance = require('node-binance-api');
 const binance = new Binance().options({
-  APIKEY: 'uXUWSRKHjVLompikzpoveIbFJ9gyT4hCbLwnfveHmQt8Q83pqbQLY4qq5r0uWJwH',
-  APISECRET: 'Q0V2mvHrsBiSYfP72IsPsIKjA8VcVO32m5bF17FpL0c5IO86xubuANmA7EcTgP9L'
+  APIKEY: 'JR4TZ3ZEOdA0Z8eQfBemtlG7k2fao26PWY2E3LmTrBiu7OTOdyuZwxdR9aNTlaLs',
+  APISECRET: 'Z1FFWHuU7ChUP1Ct14DDKkInhvXRZs5Vg5v7gVoU1EtgRF7C4lBQRCj5SjadWQCH'
 });
 
 // binance.futuresLeverageBracket("LINKUSDT").then(resp => {
