@@ -41,7 +41,7 @@ app.get("/", async(req, res) => {
       }); 
   });
   
-  app.listen(PORT, () => {
+  app.listen(PORT, err => {
     if(err) throw err;
     console.log("server started on port 80");
   });
