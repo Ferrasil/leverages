@@ -1,7 +1,7 @@
 const Binance = require('node-binance-api');
 const binance = new Binance().options({
-  APIKEY: 'rKmOcXROMSOYhwHaX9jAS9JxuEe7gnT7k5f58Z8kYFeWoKbvdvdjcD3ZwuOMcd7x',
-  APISECRET: 'iZT0MuHa5mWXZTQL5089COZDmE5oSdbCnr6t4JvvWYbzXEy7NnDmj5gACZwN0SRg'
+  APIKEY: 'uXUWSRKHjVLompikzpoveIbFJ9gyT4hCbLwnfveHmQt8Q83pqbQLY4qq5r0uWJwH',
+  APISECRET: 'Q0V2mvHrsBiSYfP72IsPsIKjA8VcVO32m5bF17FpL0c5IO86xubuANmA7EcTgP9L'
 });
 
 // binance.futuresLeverageBracket("LINKUSDT").then(resp => {
@@ -20,10 +20,13 @@ app.get("/", async(req, res) => {
     let brackets = {};
     let activeTokens = await binance.futuresPrices();
     activeTokens = Object.keys(activeTokens)
+    
     let leverages = await binance.futuresLeverageBracket()
+    // console.log(leverages.map(a => a.symbol).join(','))
     leverages = leverages.sort((a,b) => b.brackets.length - a.brackets.length).filter(a => {
-        return !a.symbol.includes("BUSD")  && activeTokens.includes(a.symbol)
+        return !a.symbol.includes("BUSD")  && activeTokens.includes(a.symbol) || a.symbol.includes('1000SHIB')
     })
+    
     for (const token of leverages) {
 
         for (const bracket of token.brackets) {
