@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index page</title>
+  </head>
+  <body>
+    <div class="wrapper">
+    <table>
+      <tr>
+        <col width="50px" />
+        <td ></td>
+    
+    <% leverages.forEach(function(token) { %>
+      <td ><b><%=token.symbol%></b></td>
+        <% })%>
+    <% for (var leverage in brackets) { %>
+          <tr>
+            <td class="sticky">
+              <b>x<%=leverage%></b>
+            </td>
+            <% leverages.forEach(function(token) { %>
+                <td><%=brackets[leverage][token.symbol]%></td>
+              <% })%>
+          </tr>
+      <% }%>
+      </tr>
+      </table>  
+    </div>
+    <center style="margin-top:15px">
+    <input type="number" id="orderSize" placeholder="Введите размер ордера" style="width:200px">
+    <button  onclick="calculate()">Посчитать</button></center>
+    <br/>
+    <textarea name="result" id="result"  ></textarea>
+
+    <script>
+      function calculate(){
+        let command ="";
+        let leveragesGroups = {};
+        const val  = document.querySelector('#orderSize').value
+        let commands = {};
+        let leverages = <%- JSON.stringify(leverages) %>;
+        let brackets = <%- JSON.stringify(leverages) %>;
+        for (const leverage of leverages) {
+            const symbol = leverage.symbol;
+            commands[symbol] = 0;
+            for (const bracket of leverage.brackets) {
+                if(bracket.notionalCap>=val && commands[symbol]<bracket.initialLeverage) commands[symbol] = bracket.initialLeverage
+            }
+            // for (const symbol in leverage) {
+            //    if(leverage[symbol]) 
+            // }
+        }
+     
+        for (const token in commands) {
+          if(!leveragesGroups[commands[token]]) leveragesGroups[commands[token]] = []
+          leveragesGroups[commands[token]].push(token)
+        }
+        let resultCommand = "";
+        for (const leverage in leveragesGroups) {
+          resultCommand+=`Leverage ${leverage} ${leveragesGroups[leverage].join(',')}\n`;
+        }
+        document.querySelector("#result").value  = resultCommand;
+      }
+    </script>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap');
+        html,body {
+          margin: 0;
+          background: rgb(24, 26, 32);font-family: 'Roboto', sans-serif;
+          color:white;
+          width: 100%;overflow: hidden;
+        }
+        .wrapper{
+          max-width: 100%;
+          overflow: auto;
+        }
+        table {
+          margin-top: 10px;
+  border-collapse: collapse;
+          
+
+}
+#result{
+
+  width: 95%;
+  display: block;
+  margin: 10px auto 0 auto;
+  height: 260px;padding: 10px;
+}
+  .sticky {
+    position: sticky;
+  position: -webkit-sticky;
+  left: 0;
+  background: #569CA8;
+  color: white;
+  z-index: 1;
+  width: 100px; /* How can I make this dynamic? */
+  }
+         th, td {
+  border: 1px solid #ccc;
+}
+        table td{overflow: hidden;
+          padding:5px;text-align: center;
+        }
+      </style>
+  </body>
+</html>
