@@ -18,15 +18,18 @@ function numberWithCommas(x) {
 }
 app.get("/", async(req, res) => {
     let brackets = {};
+    let de_brackets = {};
     let activeTokens = await binance.futuresPrices();
     activeTokens = Object.keys(activeTokens)
-    
+    let de_leverages = await binance.deliveryLeverageBracket()
     let leverages = await binance.futuresLeverageBracket()
-    // console.log(leverages.map(a => a.symbol).join(','))
+
     leverages = leverages.sort((a,b) => b.brackets.length - a.brackets.length).filter(a => {
         return !a.symbol.includes("BUSD")  && activeTokens.includes(a.symbol) || a.symbol.includes('1000SHIB')
     })
-    
+    de_leverages = de_leverages.sort((a,b) => b.brackets.length - a.brackets.length)
+
+
     for (const token of leverages) {
 
         for (const bracket of token.brackets) {
@@ -38,7 +41,22 @@ app.get("/", async(req, res) => {
             //brackets[bracket.initialLeverage][token.symbol] = bracket.notionalCap;
         } 
     }
+    for (const token of de_leverages) {
+
+        for (const bracket of token.brackets) {
+
+            if(bracket.initialLeverage === 1 || bracket.initialLeverage === 2) continue
+            if(!de_brackets[bracket.initialLeverage]) 
+            de_brackets[bracket.initialLeverage] = {}
+            de_brackets[bracket.initialLeverage][token.pair] = numberWithCommas(bracket.qtyCap);
+        
+            //brackets[bracket.initialLeverage][token.symbol] = bracket.notionalCap;
+        } 
+    }
+    
     res.render("index",{
+        de_leverages,
+        de_brackets,
         leverages,
         brackets,
       }); 

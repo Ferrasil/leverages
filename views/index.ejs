@@ -7,26 +7,65 @@
   </head>
   <body>
     <div class="wrapper">
-    <table>
-      <tr>
-        <col width="50px" />
-        <td ></td>
-    
-    <% leverages.forEach(function(token) { %>
-      <td ><b><%=token.symbol%></b></td>
-        <% })%>
-    <% for (var leverage in brackets) { %>
-          <tr>
-            <td class="sticky">
-              <b>x<%=leverage%></b>
-            </td>
-            <% leverages.forEach(function(token) { %>
-                <td><%=brackets[leverage][token.symbol]%></td>
+      <div class="material-tabs">
+        <div class="tabbed-section__selector">
+          <a class="tabbed-section__selector-tab-1 active" href="#">Futures (в USDT)</a>
+          <a class="tabbed-section__selector-tab-2" href="#">Кварталки (в монетах)</a>
+      
+          <span class="tabbed-section__highlighter"></span>
+        </div>
+      
+      
+        <div class="tabbed-section-1 visible">
+           
+          <table>
+            <tr>
+              <col width="50px" />
+              <td ></td>
+              
+          <% leverages.forEach(function(token) { %>
+            <td ><b><%=token.symbol%></b></td>
               <% })%>
-          </tr>
-      <% }%>
-      </tr>
-      </table>  
+          <% for (var leverage in brackets) { %>
+                <tr>
+                  <td class="sticky">
+                    <b>x<%=leverage%></b>
+                  </td>
+                  <% leverages.forEach(function(token) { %>
+                      <td><%=brackets[leverage][token.symbol]%></td>
+                    <% })%>
+                </tr>
+            <% }%>
+            </tr>
+            </table>  
+
+        </div>
+        <div class="tabbed-section-2 hidden">
+          <table>
+            <tr>
+              <col width="50px" />
+              <td ></td>
+              
+              <% de_leverages.forEach(function(token) { %>
+                <td ><b><%=token.pair%></b></td>
+                  <% })%>
+              <% for (var leverage in de_brackets) { %>
+                    <tr>
+                      <td class="sticky">
+                        <b>x<%=leverage%></b>
+                      </td>
+                      <% de_leverages.forEach(function(token) { %>
+                          <td><%=de_brackets[leverage][token.pair]%></td>
+                        <% })%>
+                    </tr>
+                <% }%>
+            </tr>
+            </table> 
+        
+        </div> 
+      </div>
+    
+  
     </div>
     <center style="margin-top:15px">
     <input type="number" id="orderSize" placeholder="Введите размер ордера" style="width:200px">
@@ -35,6 +74,78 @@
     <textarea name="result" id="result"  ></textarea>
 
     <script>
+      // TOGGLE SECTIONS
+// querySelector, jQuery style
+var $ = function (selector) {
+  return document.querySelectorAll(selector);
+};
+
+
+// Define tabs, write down them classes  '.tabbed-section__selector-tab-3'
+var tabs = [
+  '.tabbed-section__selector-tab-1',
+  '.tabbed-section__selector-tab-2'
+];
+
+// Create the toggle function
+var toggleTab = function(element) {
+  var parent = element.parentNode;
+  
+  // Do things on click
+  $(element)[0].addEventListener('click', function(){
+    // Remove the active class on all tabs.
+    // climbing up the DOM tree with `parentNode` and target 
+    // the children ( the tabs ) with childNodes
+    this.parentNode.childNodes[1].classList.remove('active');
+    this.parentNode.childNodes[3].classList.remove('active');
+    // this.parentNode.childNodes[5].classList.remove('active');
+
+    // Then, give `this` (the clicked tab), the active class
+    this.classList.add('active');
+    
+    // Check if the clicked tab contains the class of the 1 or 2
+    if(this.classList.contains('tabbed-section__selector-tab-1')) {
+      // and change the classes, show the first content panel
+      $('.tabbed-section-1')[0].classList.remove('hidden');
+      $('.tabbed-section-1')[0].classList.add('visible');
+      
+      // Hide the second
+      $('.tabbed-section-2')[0].classList.remove('visible');
+      $('.tabbed-section-2')[0].classList.add('hidden');
+      //  $('.tabbed-section-3')[0].classList.remove('visible');
+      // $('.tabbed-section-3')[0].classList.add('hidden');
+    }
+
+    if(this.classList.contains('tabbed-section__selector-tab-2')) {
+      // and change the classes, show the second content panel
+      $('.tabbed-section-2')[0].classList.remove('hidden');
+      $('.tabbed-section-2')[0].classList.add('visible');
+      // Hide the first
+      $('.tabbed-section-1')[0].classList.remove('visible');
+      $('.tabbed-section-1')[0].classList.add('hidden');
+      // $('.tabbed-section-3')[0].classList.remove('visible');
+      // $('.tabbed-section-3')[0].classList.add('hidden');
+    }
+    
+    if(this.classList.contains('tabbed-section__selector-tab-3')) {
+      // and change the classes, show the second content panel
+      // $('.tabbed-section-3')[0].classList.remove('hidden');
+      // $('.tabbed-section-3')[0].classList.add('visible');
+      // Hide the first
+      $('.tabbed-section-1')[0].classList.remove('visible');
+      $('.tabbed-section-1')[0].classList.add('hidden');
+      $('.tabbed-section-2')[0].classList.remove('visible');
+      $('.tabbed-section-2')[0].classList.add('hidden');
+    }
+  });
+};
+
+// Then finally, iterates through all tabs, to activate the 
+// tabs system.
+for (var i = tabs.length - 1; i >= 0; i--) {
+  toggleTab(tabs[i])
+};
+
       function calculate(){
         let command ="";
         let leveragesGroups = {};
@@ -81,6 +192,119 @@
   border-collapse: collapse;
           
 
+}
+
+.material-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding:10px 3px;
+  padding-top: 0;
+  width: 100%;
+  position: relative;
+}
+@media all and (max-width: 480px) {
+  .material-tabs {
+    max-width: 100%;
+    left: 0;
+  }
+}
+
+.visible {
+  position: relative;
+  opacity: 1;
+  width: 100%;
+  height: auto;
+  float: left;
+  transition: opacity 0.35s ease;
+  z-index: 3;
+}
+
+.hidden {
+  position: absolute;
+  opacity: 0;
+  z-index: 0;
+  transition: opacity 0s ease;
+}
+.hidden img {
+  display: none;
+}
+
+[class*=tabbed-section-] {
+  float: left;
+}
+[class*=tabbed-section-] img {
+  display: block;
+  width: 80%;
+  margin: auto 10%;
+}
+
+.tabbed-section__selector {
+  position: relative;
+  height: 32px;
+  padding: 0;
+  z-index: 10;
+  margin: 0;
+}
+.tabbed-section__selector [class*=-tab-] {
+  float: left;
+  display: block;
+  height: 32px;
+  line-height: 32px;
+  width: 160px;
+  text-align: center;
+  color:rgb(146, 146, 146);
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 14px;
+}
+.tabbed-section__selector [class*=-tab-].active {
+  color: #fff;
+}
+.tabbed-section__selector a:first-child {
+  border-top-left-radius: 2px;
+}
+.tabbed-section__selector a:last-of-type {
+  border-top-right-radius: 2px;
+}
+
+.tabbed-section__highlighter {
+  position: absolute;
+  z-index: 10;
+  bottom: 0;
+  height: 2px;
+  background: #fff;
+  max-width: 160px;
+  width: 100%;
+  transform: translateX(0);
+  display: block;
+  left: 0;
+  transition: transform 0.23s ease;
+}
+
+.tabbed-section__selector-tab-3.active ~ .tabbed-section__highlighter {
+  transform: translateX(320px);
+}
+
+.tabbed-section__selector-tab-2.active ~ .tabbed-section__highlighter {
+  transform: translateX(160px);
+}
+
+.tabbed-section__selector-tab-1.active ~ .tabbed-section__highlighter {
+  transform: translateX(0);
+}
+
+.divider {
+  background: rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: block;
+  float: left;
+  width: 100%;
+  height: 1px;
+  margin: 8px 0;
+  padding: 0;
+  overflow: hidden;
 }
 #result{
 
