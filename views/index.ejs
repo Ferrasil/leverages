@@ -11,7 +11,7 @@
         <div class="tabbed-section__selector">
           <a class="tabbed-section__selector-tab-1 active" href="#">Futures (в USDT)</a>
           <a class="tabbed-section__selector-tab-2" href="#">Кварталки (в монетах)</a>
-      
+          <a class="tabbed-section__selector-tab-3" href="#">Все рынки</a>
           <span class="tabbed-section__highlighter"></span>
         </div>
       
@@ -63,6 +63,55 @@
             </table> 
         
         </div> 
+        <div class="tabbed-section-3 hidden">
+          <div class="tokens-wrapper">
+            <table class="tokens">
+              <thead>
+                <th>
+                  Монета
+                </th>
+
+                <% for (var token of spot) { %>
+                  <th>
+                  <%=token%>
+                  </th>
+                  <% } %>
+                <th>Фьючерсы</th>
+                <th>Маржиналка</th>
+              </thead>
+              <tbody> 
+            <% for (var ticker in all) { %>
+            <tr>
+              <th><%=ticker%></th>
+              <% for (var token of spot) { %>
+                <td>
+                <% if(all[ticker].includes(token)) {%>
+                  <div class="green"></div>
+                <% }  else  { %>
+                  <div class="red"></div>
+                  <%  } %>
+                  
+              </td>
+                <% } %>
+                <td>
+                  <% if(all[ticker].includes("FUTURES")) {%>
+                    <div class="green"></div>
+                  <% } else  { %>
+                  <div class="red"></div>
+                  <%  } %>
+                </td>
+                <td>
+                  <% if(all[ticker].includes("MARGIN")) {%>
+                    <div class="green"></div>
+                  <% } else  { %>
+                    <div class="red"></div>
+                    <%  } %>
+                </td>
+            </tr>
+            <% } %>
+              </tbody>     </table>
+            </div>
+        </div>
       </div>
     
   
@@ -84,7 +133,8 @@ var $ = function (selector) {
 // Define tabs, write down them classes  '.tabbed-section__selector-tab-3'
 var tabs = [
   '.tabbed-section__selector-tab-1',
-  '.tabbed-section__selector-tab-2'
+  '.tabbed-section__selector-tab-2',
+  '.tabbed-section__selector-tab-3'
 ];
 
 // Create the toggle function
@@ -98,7 +148,7 @@ var toggleTab = function(element) {
     // the children ( the tabs ) with childNodes
     this.parentNode.childNodes[1].classList.remove('active');
     this.parentNode.childNodes[3].classList.remove('active');
-    // this.parentNode.childNodes[5].classList.remove('active');
+    this.parentNode.childNodes[5].classList.remove('active');
 
     // Then, give `this` (the clicked tab), the active class
     this.classList.add('active');
@@ -112,8 +162,8 @@ var toggleTab = function(element) {
       // Hide the second
       $('.tabbed-section-2')[0].classList.remove('visible');
       $('.tabbed-section-2')[0].classList.add('hidden');
-      //  $('.tabbed-section-3')[0].classList.remove('visible');
-      // $('.tabbed-section-3')[0].classList.add('hidden');
+      $('.tabbed-section-3')[0].classList.remove('visible');
+      $('.tabbed-section-3')[0].classList.add('hidden');
     }
 
     if(this.classList.contains('tabbed-section__selector-tab-2')) {
@@ -123,14 +173,14 @@ var toggleTab = function(element) {
       // Hide the first
       $('.tabbed-section-1')[0].classList.remove('visible');
       $('.tabbed-section-1')[0].classList.add('hidden');
-      // $('.tabbed-section-3')[0].classList.remove('visible');
-      // $('.tabbed-section-3')[0].classList.add('hidden');
+      $('.tabbed-section-3')[0].classList.remove('visible');
+      $('.tabbed-section-3')[0].classList.add('hidden');
     }
     
     if(this.classList.contains('tabbed-section__selector-tab-3')) {
       // and change the classes, show the second content panel
-      // $('.tabbed-section-3')[0].classList.remove('hidden');
-      // $('.tabbed-section-3')[0].classList.add('visible');
+      $('.tabbed-section-3')[0].classList.remove('hidden');
+      $('.tabbed-section-3')[0].classList.add('visible');
       // Hide the first
       $('.tabbed-section-1')[0].classList.remove('visible');
       $('.tabbed-section-1')[0].classList.add('hidden');
@@ -181,19 +231,45 @@ for (var i = tabs.length - 1; i >= 0; i--) {
           margin: 0;
           background: rgb(24, 26, 32);font-family: 'Roboto', sans-serif;
           color:white;
-          width: 100%;overflow: hidden;
+          width: 100%;
+          /* // overflow: hidden; */
         }
-        .wrapper{
+        /* .wrapper{
           max-width: 100%;
           overflow: auto;
+        } */
+        table.tokens {
+          margin: 20px auto 0;
+    max-width: 940px;
+    width: 100%;
+        }
+        table.tokens td{
+          position: relative;
         }
         table {
           margin-top: 10px;
   border-collapse: collapse;
           
-
+} 
+ 
+.tokens th {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 23;
+ 
+    background: black;
 }
-
+.tokens th:first-child{
+  position: relative;
+}
+.tokens th[scope=row] {
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+ 
 .material-tabs {
   display: flex;
   align-items: center;
@@ -220,7 +296,24 @@ for (var i = tabs.length - 1; i >= 0; i--) {
   transition: opacity 0.35s ease;
   z-index: 3;
 }
-
+.green{
+  background: green;
+    height: 100%;
+    display: flex;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+}
+.red{
+  background: red;
+    height: 100%;
+    display: flex;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+}
 .hidden {
   position: absolute;
   opacity: 0;
