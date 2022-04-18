@@ -25,7 +25,7 @@ app.get("/", async(req, res) => {
     let leverages = await binance.futuresLeverageBracket()
 
     leverages = leverages.sort((a,b) => b.brackets.length - a.brackets.length).filter(a => {
-        return !a.symbol.includes("BUSD")  && activeTokens.includes(a.symbol) || a.symbol.includes('1000SHIB')
+        return (a.symbol.endsWith("USDT") || a.symbol.includes("_"))  && activeTokens.includes(a.symbol) 
     })
     de_leverages = de_leverages.sort((a,b) => b.brackets.length - a.brackets.length)
 
