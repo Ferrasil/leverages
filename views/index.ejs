@@ -18,48 +18,54 @@
       
         <div class="tabbed-section-1 visible">
            
-          <table>
-            <tr>
-              <col width="50px" />
-              <td ></td>
+          <table class="tokens">
+            <thead>
+              <tr>
+                <th>Монета</th>
+                <% for (var leverage in brackets) { %>
+                <th class="sticky">  <b>x<%=leverage%></b></th>
+                <% }%>
+              </tr>
+            </thead>
               
           <% leverages.forEach(function(token) { %>
-            <td ><b><%=token.symbol%></b></td>
-              <% })%>
-          <% for (var leverage in brackets) { %>
-                <tr>
-                  <td class="sticky">
-                    <b>x<%=leverage%></b>
-                  </td>
-                  <% leverages.forEach(function(token) { %>
-                      <td><%=brackets[leverage][token.symbol]%></td>
-                    <% })%>
-                </tr>
-            <% }%>
-            </tr>
-            </table>  
-
-        </div>
-        <div class="tabbed-section-2 hidden">
-          <table>
             <tr>
-              <col width="50px" />
-              <td ></td>
-              
-              <% de_leverages.forEach(function(token) { %>
-                <td ><b><%=token.pair%></b></td>
-                  <% })%>
-              <% for (var leverage in de_brackets) { %>
-                    <tr>
-                      <td class="sticky">
-                        <b>x<%=leverage%></b>
-                      </td>
-                      <% de_leverages.forEach(function(token) { %>
-                          <td><%=de_brackets[leverage][token.pair]%></td>
-                        <% })%>
-                    </tr>
+              <th ><b><%=token.symbol%></b></th>
+             
+              <% for (var leverage in brackets) { %>
+                  <td><%=brackets[leverage][token.symbol]%></td>
                 <% }%>
             </tr>
+            <% })%>
+            </table>  
+            <center style="margin-top:15px">
+              <input type="number" id="orderSize" placeholder="Введите размер ордера" style="width:200px">
+              <button  onclick="calculate()">Посчитать</button></center>
+              <br/>
+              <textarea name="result" id="result"  ></textarea>
+        </div>
+        <div class="tabbed-section-2 hidden">
+          <table class="tokens">
+            <thead> 
+            <tr>
+              <th>Монета</th>
+              
+              <% for (var leverage in de_brackets) { %>
+                <th class="sticky">  <b>x<%=leverage%></b></th>
+                  <% }%>
+            </tr> </thead>
+            <tbody>
+              <% de_leverages.forEach(function(token) { %>
+                    <tr>
+                      <th >
+                        <b><%=token.pair%></b>
+                      </th>
+                      <% for (var leverage in de_brackets) { %>
+                          <td><%=de_brackets[leverage][token.pair]%></td>
+                        <% }%>
+                    </tr>
+                <% })%>
+              </tbody>
             </table> 
         
         </div> 
@@ -116,11 +122,7 @@
     
   
     </div>
-    <center style="margin-top:15px">
-    <input type="number" id="orderSize" placeholder="Введите размер ордера" style="width:200px">
-    <button  onclick="calculate()">Посчитать</button></center>
-    <br/>
-    <textarea name="result" id="result"  ></textarea>
+    
 
     <script>
       // TOGGLE SECTIONS
@@ -258,7 +260,7 @@ for (var i = tabs.length - 1; i >= 0; i--) {
   top: 0;
   z-index: 23;
  
-    background: black;
+    background: #569CA8;
 }
 .tokens th:first-child{
   position: relative;
@@ -275,7 +277,7 @@ for (var i = tabs.length - 1; i >= 0; i--) {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding:10px 3px;
+  padding:10px 0px;
   padding-top: 0;
   width: 100%;
   position: relative;
@@ -316,8 +318,11 @@ for (var i = tabs.length - 1; i >= 0; i--) {
 }
 .hidden {
   position: absolute;
+  height: 0px;
   opacity: 0;
+  overflow: hidden;
   z-index: 0;
+  pointer-events: none;
   transition: opacity 0s ease;
 }
 .hidden img {
@@ -403,7 +408,7 @@ for (var i = tabs.length - 1; i >= 0; i--) {
 
   width: 95%;
   display: block;
-  margin: 10px auto 0 auto;
+  margin: 10px auto 30px auto;
   height: 260px;padding: 10px;
 }
   .sticky {
