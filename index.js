@@ -56,12 +56,11 @@ app.get("/", async(req, res) => {
     };
     let allMarkets = {}
     const allTokens = [...new Set(Object.keys(spotTokens).filter(tk => checkTicker(tk,true)).map(tk => checkTicker(tk,false)))];
-    // çconsole.log(allTokens)
     // const cmcList = await client.getMetadata({symbol: allTokens.join(','), volume_24h_min:300000})
-    // console.log(cmcList)
+   console.log(marginTokens)
     for (const tkn of allTokens.sort()) {
-            allMarkets[tkn] = Object.keys(spotTokens).filter(token => token.includes(tkn) ).map( token => token.replace(tkn,''))
-            if(leverages.find(token => token.symbol.includes(tkn))) allMarkets[tkn].push('FUTURES')
+            allMarkets[tkn] = Object.keys(spotTokens).filter(token => token.startsWith(tkn) ).map( token => token.replace(tkn,''))
+            if(leverages.find(token => token.symbol.startsWith(tkn))) allMarkets[tkn].push('FUTURES')
             if(marginTokens.includes(tkn))  allMarkets[tkn].push('MARGIN')
     }
 
