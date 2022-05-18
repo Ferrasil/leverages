@@ -36,11 +36,28 @@ app.get("/", async(req, res) => {
     activeTokens = Object.keys(activeTokens)
     let de_leverages = await binance.deliveryLeverageBracket()
     let leverages = await binance.futuresLeverageBracket()
+    // leverages = leverages.sort((a,b) => b.brackets.length - a.brackets.length)
 
-    leverages = leverages.sort((a,b) => b.brackets.length - a.brackets.length).filter(a => {
+    leverages = leverages.sort((a, b)=>{
+        var nameA = a.symbol, nameB = b.symbol;
+        if (nameA < nameB) //sort string ascending
+         return -1;
+        if (nameA > nameB)
+         return 1;
+        return 0; //default return value (no sorting)
+       }).filter(a => {
         return (a.symbol.endsWith("USDT") || a.symbol.includes("_"))  && activeTokens.includes(a.symbol) 
     })
-    de_leverages = de_leverages.sort((a,b) => b.brackets.length - a.brackets.length)
+    // de_leverages = de_leverages.sort((a,b) => b.brackets.length - a.brackets.length)
+
+    de_leverages = de_leverages.sort(function(a, b){
+        var nameA = a.symbol, nameB = b.symbol;
+        if (nameA < nameB) //sort string ascending
+         return -1;
+        if (nameA > nameB)
+         return 1;
+        return 0; //default return value (no sorting)
+       });
     const spotTickers  = ['USDT','BUSD','BTC','ETH','BNB']
 
     const checkTicker = (token, filter = false) => {
@@ -57,7 +74,7 @@ app.get("/", async(req, res) => {
     let allMarkets = {}
     const allTokens = [...new Set(Object.keys(spotTokens).filter(tk => checkTicker(tk,true)).map(tk => checkTicker(tk,false)))];
     // const cmcList = await client.getMetadata({symbol: allTokens.join(','), volume_24h_min:300000})
-   console.log(marginTokens)
+   // console.log(marginTokens)
     for (const tkn of allTokens.sort()) {
             allMarkets[tkn] = Object.keys(spotTokens).filter(token => token.startsWith(tkn) ).map( token => token.replace(tkn,''))
             if(leverages.find(token => token.symbol.startsWith(tkn))) allMarkets[tkn].push('FUTURES')
@@ -67,7 +84,7 @@ app.get("/", async(req, res) => {
     // allMarkets['MARGIN'] = 
 
 
-
+    console.log(leverages)
    
     for (const token of leverages) {
 
@@ -92,7 +109,7 @@ app.get("/", async(req, res) => {
             //brackets[bracket.initialLeverage][token.symbol] = bracket.notionalCap;
         } 
     }
-    
+     
     res.render("index",{
         de_leverages,
         de_brackets,
